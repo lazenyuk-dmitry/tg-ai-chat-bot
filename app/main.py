@@ -6,11 +6,15 @@ from aiogram.client.default import DefaultBotProperties
 from app.config import settings
 from app.bot.handlers import router
 from app.utils.logger import logger
+from app.db.session import test_connection, init_db
 
 
 async def main():
     logger.info("Starting Telegram AI Bot...")
-    
+
+    # await test_connection()
+    await init_db()
+
     bot = Bot(
         token=settings.bot_token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),

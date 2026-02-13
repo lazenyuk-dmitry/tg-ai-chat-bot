@@ -2,8 +2,12 @@ from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
 from app.utils.logger import logger
+from app.services.ai_service import AIService
+from app.services.dialog_service import DialogService
 
 router = Router()
+ai_service = AIService()
+dialog_service = DialogService()
 
 
 @router.message(CommandStart())
@@ -30,4 +34,25 @@ async def help_handler(message: Message):
 @router.message()
 async def echo_handler(message: Message):
     logger.info(f"Received text from {message.from_user.id}: {message.text}")
-    await message.answer("Сейчас будет ответ от AI... (позже подключим OpenAI)")
+
+    user_id = message.from_user.id
+    text = message.text
+
+    # Сохраняем сообщение пользователя
+    await dialog_service.add_message(user_id, "user", text)
+
+    # Берем историю
+    history = await dialog_service.get_history(user_id)
+
+    # Добавляем системное сообщение (опционально)
+    if not any(msg['role'] == "system" for msg in history):
+        history.insert(0, {"role": "system", "content": "Ты помощник, отвечай дружелюбно."})
+
+    # Генерируем ответ
+    answer = await ai_service.generate_response(history)
+
+    # Сохраняем ответ AI
+    await dialog_service.add_message(user_id, "assistant", answer)
+
+    # Отправляем пользователю
+    await message.answer(answer)
