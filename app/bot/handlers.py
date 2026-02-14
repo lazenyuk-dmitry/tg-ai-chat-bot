@@ -45,14 +45,14 @@ async def echo_handler(message: Message):
     history = await dialog_service.get_history(user_id)
 
     # Добавляем системное сообщение (опционально)
-    if not any(msg['role'] == "system" for msg in history):
-        history.insert(0, {"role": "system", "content": "Ты помощник, отвечай дружелюбно."})
+    # if not any(msg['role'] == "system" for msg in history):
+    #     history.insert(0, {"role": "system", "content": "Ты помощник, отвечай дружелюбно."})
 
     # Генерируем ответ
     answer = await ai_service.generate_response(history)
 
     # Сохраняем ответ AI
-    await dialog_service.add_message(user_id, "assistant", answer)
+    await dialog_service.add_message(user_id, "model", answer)
 
     # Отправляем пользователю
     await message.answer(answer)

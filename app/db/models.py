@@ -6,8 +6,7 @@ import enum
 
 class RoleEnum(str, enum.Enum):
     user = "user"
-    assistant = "assistant"
-    system = "system"
+    model = "model"
 
 class Message(Base):
     __tablename__ = "messages"

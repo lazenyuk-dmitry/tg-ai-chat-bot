@@ -1,7 +1,10 @@
+import asyncio
 from app.db.session import async_session
 from app.db.models import Message, RoleEnum
 from sqlalchemy.future import select
 from app.utils.logger import logger
+from aiogram.enums import ChatAction
+from google.genai import types
 
 class DialogService:
     def __init__(self):
@@ -25,7 +28,10 @@ class DialogService:
             messages = result.scalars().all()
             # возвращаем в порядке от старых к новым
             return [
-                {"role": msg.role, "content": msg.content}
+                types.Content(
+                    role='user',
+                    parts=[types.Part.from_text(text=msg.content)]
+                )
                 for msg in reversed(messages)
             ]
 
