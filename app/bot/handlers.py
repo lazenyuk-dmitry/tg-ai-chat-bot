@@ -6,6 +6,7 @@ from app.services.ai_service import AIService
 from app.services.dialog_service import DialogService
 
 router = Router()
+ai_router = Router()
 ai_service = AIService()
 dialog_service = DialogService()
 
@@ -31,7 +32,7 @@ async def help_handler(message: Message):
     )
 
 
-@router.message()
+@ai_router.message()
 async def echo_handler(message: Message):
     logger.info(f"Received text from {message.from_user.id}: {message.text}")
 

@@ -4,7 +4,7 @@ from aiogram.client.default import DefaultBotProperties
 from app.bot.middleware.typing import TypingMiddleware
 
 from app.config import settings
-from app.bot.handlers import router
+from app.bot.handlers import router, ai_router
 from app.utils.logger import logger
 from app.db.session import init_db
 
@@ -18,7 +18,8 @@ class BotService():
 
         self.dp = Dispatcher()
         self.dp.include_router(router)
-        self.dp.message.middleware(TypingMiddleware())
+        self.dp.include_router(ai_router)
+        ai_router.message.middleware(TypingMiddleware())
 
     async def start(self):
         logger.info("Starting Telegram AI Bot...")
