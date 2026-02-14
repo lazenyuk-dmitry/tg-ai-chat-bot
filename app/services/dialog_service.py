@@ -1,4 +1,5 @@
 import asyncio
+from sqlalchemy import text
 from app.db.session import async_session
 from app.db.models import Message, RoleEnum
 from sqlalchemy.future import select
@@ -38,7 +39,7 @@ class DialogService:
     async def reset_history(self, user_id: int):
         async with async_session() as session:
             await session.execute(
-                f"DELETE FROM messages WHERE user_id = {user_id}"
+                text(f"DELETE FROM messages WHERE user_id = {user_id}")
             )
             await session.commit()
             logger.info(f"History reset for user {user_id}")

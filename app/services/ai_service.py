@@ -20,7 +20,7 @@ class AIService:
         try:
             # logger.info(f"Sending request to OpenAI: {messages[-1]['parts'][0].text[:50]}...")
             response = await self.client.models.generate_content(
-                model="gemini-3-flash-preview",
+                model="gemini-2.5-flash",
                 contents=messages,
                 config=types.GenerateContentConfig(
                     system_instruction="Ты — дружелюбный ИИ-помощник. Отвечай на языке пользователя. Будь лаконичен.",

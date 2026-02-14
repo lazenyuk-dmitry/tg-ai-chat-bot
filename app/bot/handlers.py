@@ -1,6 +1,7 @@
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
+from aiogram.fsm.context import FSMContext
 from app.utils.logger import logger
 from app.services.ai_service import AIService
 from app.services.dialog_service import DialogService
@@ -12,8 +13,10 @@ dialog_service = DialogService()
 
 
 @router.message(CommandStart())
-async def start_handler(message: Message):
+async def start_handler(message: Message, state: FSMContext):
     logger.info(f"User {message.from_user.id} sent /start")
+    await state.clear()
+    await dialog_service.reset_history(message.from_user.id)
     await message.answer(
         "Привет! 👋\n\n"
         "Я AI-бот. Отправь мне сообщение, и я сгенерирую ответ.\n\n"
