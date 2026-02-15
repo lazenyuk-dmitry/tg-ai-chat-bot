@@ -1,4 +1,3 @@
-from openai import OpenAI
 from app.config import settings
 from app.utils.logger import logger
 from google.genai import Client, types
