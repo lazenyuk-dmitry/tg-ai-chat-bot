@@ -6,7 +6,7 @@ from google.genai import Client, types
 
 class AIService:
     def __init__(self):
-        self.client = Client(api_key=settings.openai_api_key).aio
+        self.client = Client(api_key=settings.ai_api_key).aio
 
     async def generate_response(self, messages: list[dict]) -> str:
         """

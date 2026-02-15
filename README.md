@@ -78,12 +78,16 @@ pip install -r requirements.txt
 
 ## 🔐 Настройка окружения
 
-Создай .env файл:
+Создай .env файл (можно копировать и переименовать .env.example -> .env) в корне проекта:
 
 ```ini
-BOT_TOKEN=your_telegram_token
-OPENAI_API_KEY=your_openai_key
-DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/tg_chatbot
+BOT_TOKEN=XXX
+AI_API_KEY=XXX
+DB_USER=admin
+DB_PASSWORD=admin
+DB_NAME=tg-ai-bot
+DB_HOST="localhost"
+DB_PORT=5432
 ```
 
 ---
