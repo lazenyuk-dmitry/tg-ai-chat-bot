@@ -1,5 +1,5 @@
 from typing import Iterator
-from sqlalchemy import text, select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.message import Message, RoleEnum
 from app.utils.logger import logger
@@ -11,7 +11,6 @@ class MessageRepo:
 
     async def add_message(self, user_id: int, role: RoleEnum, content: str) -> None:
         async with self.async_session() as session:
-            print(role)
             msg = Message(user_id=user_id, role=role, content=content)
             session.add(msg)
             await session.commit()
@@ -20,9 +19,8 @@ class MessageRepo:
 
     async def reset_history(self, user_id: int) -> None:
         async with self.async_session() as session:
-            await session.execute(
-                text(f"DELETE FROM messages WHERE user_id = {user_id}")
-            )
+            stmt = delete(Message).where(Message.user_id == user_id)
+            await session.execute(stmt)
             await session.commit()
             logger.info("History reset for user %s", user_id)
 

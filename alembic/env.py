@@ -41,7 +41,6 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    print(settings)
     url = settings.database_url
     context.configure(
         url=url,
