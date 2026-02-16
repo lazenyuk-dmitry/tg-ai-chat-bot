@@ -6,7 +6,6 @@ from app.bot.middleware.typing import TypingMiddleware
 from app.config import settings
 from app.bot.handlers import router, ai_router
 from app.utils.logger import logger
-from app.db.session import init_db
 
 
 class BotService():
@@ -21,12 +20,11 @@ class BotService():
         self.dp.include_router(ai_router)
         ai_router.message.middleware(TypingMiddleware())
 
-    async def start(self):
+    async def start(self) -> None:
         logger.info("Starting Telegram AI Bot...")
 
         try:
             logger.info("Polling started")
-            await init_db() # TODO: вынести в отдельную функцию, чтобы не инициализировать БД при каждом перезапуске бота
             await self.dp.start_polling(self.bot)
         except Exception:
             logger.exception("Bot stopped unexpectedly!")

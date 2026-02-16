@@ -1,45 +1,52 @@
-import asyncio
-from sqlalchemy import text
-from app.db.session import async_session
-from app.db.models import Message, RoleEnum
-from sqlalchemy.future import select
+
+from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
+from app.db.models.message import RoleEnum
+from app.services.ai_service import AIService
+from app.db.repositories.message_repo import MessageRepo
 from app.utils.logger import logger
-from aiogram.enums import ChatAction
-from google.genai import types
 
 class DialogService:
-    def __init__(self):
-        pass
+    def __init__(self, message_repo: MessageRepo, ai_service: AIService):
+        self.message_repo = message_repo
+        self.ai_service = ai_service
 
-    async def add_message(self, user_id: int, role: str, content: str):
-        async with async_session() as session:
-            msg = Message(user_id=user_id, role=role, content=content)
-            session.add(msg)
-            await session.commit()
-            logger.debug(f"Saved message for user {user_id}: {content[:30]}...")
+    async def start_handler(self, message: Message, state: FSMContext) -> None:
+        logger.info("User %s sent /start", message.from_user.id)
+        await state.clear()
+        await self.message_repo.reset_history(message.from_user.id)
+        await message.answer(
+            "Привет! 👋\n\n"
+            "Я AI-бот. Отправь мне сообщение, и я сгенерирую ответ.\n\n"
+            "Нажми /help для справки."
+        )
 
-    async def get_history(self, user_id: int, limit: int = 10):
-        async with async_session() as session:
-            result = await session.execute(
-                select(Message)
-                .where(Message.user_id == user_id)
-                .order_by(Message.id.desc())
-                .limit(limit)
-            )
-            messages = result.scalars().all()
-            # возвращаем в порядке от старых к новым
-            return [
-                types.Content(
-                    role='user',
-                    parts=[types.Part.from_text(text=msg.content)]
-                )
-                for msg in reversed(messages)
-            ]
+    async def help_handler(self, message: Message) -> None:
+        logger.info("User %s sent /help", message.from_user.id)
+        await message.answer(
+            "Доступные команды:\n"
+            "/start — сбросить контекст\n"
+            "/help — показать справку\n\n"
+            "Просто отправь текст для общения с AI."
+        )
 
-    async def reset_history(self, user_id: int):
-        async with async_session() as session:
-            await session.execute(
-                text(f"DELETE FROM messages WHERE user_id = {user_id}")
-            )
-            await session.commit()
-            logger.info(f"History reset for user {user_id}")
+    async def message_handler(self, message: Message) -> None:
+        logger.info("Received text from %s: %s", message.from_user.id, message.text)
+
+        user_id = message.from_user.id
+        user_text = message.text
+
+        # Берем историю
+        history = await self.message_repo.get_history(user_id)
+
+        # Генерируем ответ
+        answer = await self.ai_service.generate_response(user_text, history)
+
+        # Сохраняем сообщение пользователя
+        await self.message_repo.add_message(user_id, RoleEnum.USER.value, user_text)
+
+        # Сохраняем ответ AI
+        await self.message_repo.add_message(user_id, RoleEnum.MODEL.value, answer)
+
+        # Отправляем ответ пользователю
+        await message.answer(answer)
