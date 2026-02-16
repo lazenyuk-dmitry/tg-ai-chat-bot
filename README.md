@@ -112,4 +112,7 @@ alembic upgrade head
 
 ```bash
 python -m app.main
+
+
+watchmedo auto-restart --patterns="*.py;*.env" --recursive -- python -m app.main
 ```
