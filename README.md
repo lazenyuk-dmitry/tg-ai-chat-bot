@@ -29,29 +29,34 @@
 ```
 tg-chatgpt-bot/
 │
-├── app/
-│   ├── bot/            # роутеры, хендлеры, telegram-логика
-│   ├── services/       # бизнес-логика (ChatGPT, работа с сообщениями)
-│   ├── db/
-│   │   ├── models.py   # ORM модели
-│   │   ├── session.py  # создание AsyncSession
-│   │   └── base.py     # Base metadata
-│   ├── config.py       # Pydantic settings
-│   └── main.py         # точка входа
-│
-├── alembic/
+├── alembic/           # миграции
 │   ├── versions/
 │   └── env.py
+|
+├── app/
+│   ├── bot/                # роутеры, хендлеры, telegram-логика
+│   ├── services/           # бизнес-логика (ChatGPT, работа с сообщениями)
+│   ├── db/
+│   │   ├── models/         # ORM модели
+│   │   ├── session.py      # создание AsyncSession
+│   │   └── base.py         # Base metadata
+│   ├── config.py           # Pydantic settings
+│   └── main.py             # точка входа
 │
 ├── alembic.ini
-├── pyproject.toml
+├── .gitignore
+├── .env.example
 ├── .env
+├── Dockerfile
+├── docker-compose.yml
+├── requirements-dev.txt    # зависимости для разработки
+├── requirements.txt        # остальные зависимости
 └── README.md
 ```
 
 ---
 
-## ⚙️ Установка
+## ⚙️ Подготовка и настройка
 
 1️⃣ Клонировать проект:
 
@@ -60,25 +65,11 @@ git clone https://github.com/yourname/tg-chatgpt-bot.git
 cd tg-chatgpt-bot
 ```
 
-2️⃣ Создать виртуальное окружение
+2️⃣ Создай .env файл (можно копировать и переименовать .env.example -> .env) в корне проекта:
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # Linux / Mac
-venv\Scripts\activate     # Windows
+cp .env.example .env
 ```
-
-3️⃣ Установить зависимости
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 🔐 Настройка окружения
-
-Создай .env файл (можно копировать и переименовать .env.example -> .env) в корне проекта:
 
 ```ini
 BOT_TOKEN=XXX
@@ -86,33 +77,58 @@ AI_API_KEY=XXX
 DB_USER=admin
 DB_PASSWORD=admin
 DB_NAME=tg-ai-bot
-DB_HOST="localhost"
+DB_HOST="localhost" # для разработки "localhost" для прода db
 DB_PORT=5432
 ```
 
 ---
 
-## 🐳 Docker
+## 🐳 Запуск в Docker (production)
 
 ```bash
-docker compose ud -d
+docker compose up -d
 ```
 
 ---
 
-## 🧱 Миграции
+## 🛠️ Локальный запуск (development)
 
-Применить миграции
+1️⃣ Создать виртуальное окружение
+
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux / Mac
+venv\Scripts\activate     # Windows
+```
+
+2️⃣ Установить зависимости
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+3️⃣ Поднять сервис базы данных в docker если нужно
+
+```bash
+docker compose up db -d
+```
+
+4️⃣ Если нужно применить мограции
 
 ```bash
 alembic upgrade head
 ```
 
-## ▶️ Запуск бота
+5️⃣ Запустить бота
+
+- Запуск со слежением за изменениями:
+
+```bash
+watchmedo auto-restart --patterns="*.py;*.env" --recursive -- python -m app.main
+```
+
+- или просто запуск приложения (при изменение файлов нужно перезапустить в ручную):
 
 ```bash
 python -m app.main
-
-
-watchmedo auto-restart --patterns="*.py;*.env" --recursive -- python -m app.main
 ```
