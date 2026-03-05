@@ -88,6 +88,7 @@ DB_PASSWORD=admin
 DB_NAME=tg-ai-bot
 DB_HOST="localhost" # для разработки "localhost" для прода db
 DB_PORT=5432
+HEALTH_PORT=8000
 ```
 
 ---

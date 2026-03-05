@@ -34,3 +34,10 @@ class BotService():
     async def stop(self):
         await self.bot.session.close()
         logger.info("Bot stopped")
+
+    async def is_healthy(self):
+        try:
+            await self.bot.get_me()
+            return True
+        except Exception:
+            return False
