@@ -1,7 +1,7 @@
 # 🤖 TG AiChat Bot
 
 Асинхронный Telegram-бот на aiogram 3, просто отправляет запрос в API сервиса AI для генерации ответа.
-Ипользует Gemini и PostgreSQL для хранения истории сообщений.
+Ипользует Gemini и PostgreSQL для хранения истории сообщений. Реализованным Health Check.
 
 Cсылка на работающий бот [AiChat Bot](https://t.me/ai_chat_xbot)
 
@@ -89,6 +89,7 @@ DB_NAME=tg-ai-bot
 DB_HOST="localhost" # для разработки "localhost" для прода db
 DB_PORT=5432
 HEALTH_PORT=8000
+DB_ECHO=False # логирование запросов к базе в консоль
 ```
 
 ---
@@ -114,6 +115,9 @@ venv\Scripts\activate     # Windows
 2️⃣ Установить зависимости
 
 ```bash
+# For production
+pip install -r requirements.txt
+# Or for development
 pip install -r requirements-dev.txt
 ```
 

@@ -1,16 +1,19 @@
 from aiogram import Router
 from aiogram.filters import CommandStart, Command
-from app.services.ai_service import AIService
+from aiogram.types import Message
 from app.services.dialog_service import DialogService
-from app.db.repositories.message_repo import MessageRepo
-from app.db.session import async_session
 
 router = Router()
 ai_router = Router()
-message_repo = MessageRepo(async_session)
-ai_service = AIService()
-dialog_service = DialogService(message_repo = message_repo, ai_service = ai_service)
 
-router.message(CommandStart())(dialog_service.start_handler)
-router.message(Command("help"))(dialog_service.help_handler)
-ai_router.message()(dialog_service.message_handler)
+@router.message(CommandStart())
+async def start_handler(message: Message, dialog_service: DialogService, **kwargs):
+    await dialog_service.start_handler(message, **kwargs)
+
+@router.message(Command("help"))
+async def help_handler(message: Message, dialog_service: DialogService, **kwargs):
+    await dialog_service.help_handler(message, **kwargs)
+
+@ai_router.message()
+async def message_handler(message: Message, dialog_service: DialogService, **kwargs):
+    await dialog_service.message_handler(message, **kwargs)

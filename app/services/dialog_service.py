@@ -11,7 +11,7 @@ class DialogService:
         self.message_repo = message_repo
         self.ai_service = ai_service
 
-    async def start_handler(self, message: Message, state: FSMContext) -> None:
+    async def start_handler(self, message: Message, state: FSMContext, **_) -> None:
         logger.info("User %s sent /start", message.from_user.id)
         await state.clear()
         await self.message_repo.reset_history(message.from_user.id)
@@ -21,7 +21,7 @@ class DialogService:
             "Нажми /help для справки."
         )
 
-    async def help_handler(self, message: Message) -> None:
+    async def help_handler(self, message: Message, **_) -> None:
         logger.info("User %s sent /help", message.from_user.id)
         await message.answer(
             "Доступные команды:\n"
@@ -30,7 +30,7 @@ class DialogService:
             "Просто отправь текст для общения с AI."
         )
 
-    async def message_handler(self, message: Message) -> None:
+    async def message_handler(self, message: Message, **_) -> None:
         logger.info("Received text from %s: %s", message.from_user.id, message.text)
 
         user_id = message.from_user.id

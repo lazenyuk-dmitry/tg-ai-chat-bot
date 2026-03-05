@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     db_port: int = 5432
     db_name: str
     health_port: int = 8000
+    db_echo: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",

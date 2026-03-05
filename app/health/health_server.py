@@ -4,11 +4,12 @@ from aiohttp import web
 from app.config import settings
 from app.utils.logger import logger
 from app.bot.service import BotService
+from app.db.service import DatabaseService
 
 class HealthServer():
     start_time = None
 
-    def __init__(self, bot: BotService):
+    def __init__(self, bot: BotService, db: DatabaseService):
         self.bot = bot
 
     async def health_check(self, request):
