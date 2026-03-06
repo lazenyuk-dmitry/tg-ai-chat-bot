@@ -31,6 +31,11 @@ Gemini вроде бы умеет сохранять контекст самом
 - genai
 - pip
 
+## 🛠️ Инфраструктура и Деплой
+
+- **Database Hosting:** [Supabase](https://supabase.com/) (PostgreSQL)
+- **Application Hosting:** [Koyeb](https://www.koyeb.com/) (PaaS via Docker)
+
 ---
 
 ## 📁 Структура проекта
