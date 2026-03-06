@@ -1,14 +1,15 @@
 # 🤖 TG AiChat Bot
 
 Асинхронный Telegram-бот на aiogram 3, просто отправляет запрос в API сервиса AI для генерации ответа.
-Ипользует Gemini и PostgreSQL для хранения истории сообщений. Полноценный Health Check.
+Использует Gemini и PostgreSQL для хранения истории сообщений. Полноценный Health Check.
 
-Cсылка на работающий бот [AiChat Bot](https://t.me/ai_chat_xbot)
+- Ссылка на работающий бот [AiChat Bot](https://t.me/ai_chat_xbot)
+- Ссылка на работающий бот [Monitoring (Health check)](https://stats.uptimerobot.com/H1UsNvDDlZ/802492295)
 
 Весь процесс установки зависимостей и запуска в docker для production выполняется одной командой.
 Для проекта выбран Gemini (gemini-2.5-flash) так как он предоставляет бесплатный тариф.
 Gemini вроде бы умеет сохранять контекст самомтоятельно, но в рамках тестового проекта контекст храниться в PostgreSQL (последние 10 сообщений).
-Пример работающего бота развернут на бесплатном инстансе Oracle Cloud Free Tier.
+Пример работающего бота развернут на бесплатных хостингах Supabase и Koyeb. Мониторинг через Uptimerobot.
 
 Проект построен по принципам:
 
@@ -35,6 +36,7 @@ Gemini вроде бы умеет сохранять контекст самом
 
 - **Database Hosting:** [Supabase](https://supabase.com/) (PostgreSQL)
 - **Application Hosting:** [Koyeb](https://www.koyeb.com/) (PaaS via Docker)
+- **Monitoring:** [Uptimerobot](https://uptimerobot.com/) (by keywords)
 
 ---
 
