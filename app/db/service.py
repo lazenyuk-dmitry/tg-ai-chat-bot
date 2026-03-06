@@ -4,11 +4,26 @@ from app.config import settings
 
 class DatabaseService:
     def __init__(self):
-        self.engine = create_async_engine(settings.database_url, echo=settings.db_echo)
+        use_pgbouncer = settings.database_url == 6543
+
+        connect_args = {}
+        if use_pgbouncer:
+            connect_args = {
+                "prepared_statement_cache_size": 0,
+                "statement_cache_size": 0
+            }
+
+        self.engine = create_async_engine(
+            settings.database_url,
+            echo=settings.db_echo,
+            pool_pre_ping=True,
+            pool_recycle=3600,
+            connect_args=connect_args
+        )
         self.async_session = async_sessionmaker(
             self.engine,
             class_=AsyncSession,
-            expire_on_commit=False
+            expire_on_commit=False,
         )
 
     async def is_healthy(self) -> bool:
