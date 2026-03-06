@@ -3,3 +3,5 @@ README.md
 .github
 .gitignore
 docs/
+.env
+.env.example
