@@ -78,7 +78,7 @@ tg-chatgpt-bot/
 1️⃣ Клонировать проект:
 
 ```bash
-git clone https://github.com/yourname/tg-chatgpt-bot.git
+git clone https://github.com/lazenyuk-dmitry/tg-ai-chat-bot.git
 cd tg-chatgpt-bot
 ```
 
